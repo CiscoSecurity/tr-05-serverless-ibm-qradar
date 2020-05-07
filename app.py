@@ -1,10 +1,10 @@
 from flask import Flask, jsonify
-
 from api.enrich import enrich_api
 from api.health import health_api
 from api.respond import respond_api
 from api.errors import CTRBaseError
 from api.utils import jsonify_errors
+
 
 app = Flask(__name__)
 
