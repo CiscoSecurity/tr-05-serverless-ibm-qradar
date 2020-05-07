@@ -54,8 +54,8 @@ class QRadarUnexpectedError(CTRBaseError):
 
 
 class BadRequestError(CTRBaseError):
-    def __init__(self, error_message):
+    def __init__(self, message):
         super().__init__(
             INVALID_ARGUMENT,
-            error_message
+            f'Invalid JSON payload received. {message}'
         )

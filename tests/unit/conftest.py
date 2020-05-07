@@ -26,7 +26,7 @@ def client(secret_key):
 def valid_jwt(client):
     header = {'alg': 'HS256'}
 
-    payload = {"credentials": "admin:Qradar_admin", "superuser": False}
+    payload = {"user": "arozl", "pass": "mypass", "superuser": False}
 
     secret_key = client.application.secret_key
 
