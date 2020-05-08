@@ -33,3 +33,40 @@ QRADAR_500_ERROR_RESPONSE = {
         "message": "Internal Error"
     }
 }
+
+QRADAR_OBSERVE_RESPONSES_FOR_POST = [
+    {"search_id": "8aa7575f-da92-4d47-9d2e-0e833a66b202"},
+    {"search_id": "107d5dc6-fbb8-23a5-8faa-df8e37114476"},
+    {"search_id": "1ui7i758-pk83-y78k-43a5-0y873a65b211"}
+]
+
+
+QRADAR_OBSERVE_RESPONSES_FOR_GET = [
+    {
+        "columns": [
+             {"name": "URL"},
+             {"name": "sourceip"}
+         ]
+    },
+    {
+        "events": [
+            {"utf8_payload": "May  8 07:42:00 127.0.0.1 notification_log"}
+        ]
+    },
+    {
+        "events": [
+            {"utf8_payload": "May  8 07:47:00 127.0.0.1 [Thread-64]"}
+        ]
+    }
+]
+
+EXPECTED_PAYLOAD_SUCCESS = {
+  "data": [
+    {
+      "utf8_payload": "May  8 07:47:00 127.0.0.1 [Thread-64]"
+    },
+    {
+      "utf8_payload": "May  8 07:47:00 127.0.0.1 [Thread-64]"
+    }
+  ]
+}
