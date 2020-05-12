@@ -12,7 +12,7 @@ EXPECTED_PAYLOAD_PERMISSION_DENIED = {
   "errors": [
     {
       "code": "permission denied",
-      "message": "The request is missing a valid credentials.",
+      "message": "The request is missing valid credentials.",
       "type": "fatal"
     }
   ]
