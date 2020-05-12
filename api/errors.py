@@ -39,7 +39,7 @@ class QRadarInvalidCredentialsError(CTRBaseError):
     def __init__(self):
         super().__init__(
             PERMISSION_DENIED,
-            'The request is missing a valid credentials.'
+            'The request is missing valid credentials.'
         )
 
 
