@@ -55,7 +55,30 @@ def observe_observables():
     return jsonify_data(relay_response)
 
 
+def get_search_pivots(value):
+    return {
+        'id': f'ref-qradar-search-ip-{value}',
+        'title': 'Search for this IP',
+        'description': 'Lookup this IP on QRadar SIEM Event Viewer',
+        'url': current_app.config['REFER_URL'].format(
+            server_ip=current_app.config['SERVER_IP'],
+            observable=value
+        ),
+        'categories': ['Search', 'QRadar SIEM']
+    }
+
+
 @enrich_api.route('/refer/observables', methods=['POST'])
 def refer_observables():
-    # Not implemented
-    return jsonify_data([])
+    _ = get_credentials()
+    observables = get_observables()
+    if not observables:
+        return jsonify_data([])
+
+    relay_output = []
+
+    for observable in observables:
+        if observable['type'] == 'ip':
+            relay_output.append(get_search_pivots(observable['value']))
+
+    return jsonify_data(relay_output)

@@ -5,8 +5,6 @@ from unittest.mock import patch, Mock
 
 from .utils import headers
 from tests.unit.payloads_for_tests import (
-    EXPECTED_PAYLOAD_PERMISSION_DENIED,
-    EXPECTED_PAYLOAD_SUCCESS,
     EXPECTED_PAYLOAD_500_ERROR,
     QRADAR_OBSERVE_RESPONSES_FOR_POST,
     QRADAR_OBSERVE_RESPONSES_FOR_GET,
@@ -16,6 +14,7 @@ from tests.unit.payloads_for_tests import (
 
 def routes():
     yield '/observe/observables'
+    yield '/refer/observables'
 
 
 @fixture(scope='module', params=routes(), ids=lambda route: f'POST {route}')
@@ -47,27 +46,37 @@ def build_side_effect(method):
 
 @patch('requests.post')
 @patch('requests.get')
-def test_enrich_call_success(mocked_get, mocked_post, route,
-                             client, valid_jwt, valid_json):
+@patch('jwt.PyJWKClient.fetch_data')
+def test_enrich_call_success(
+        fetch_data_mock, mocked_get, mocked_post, route,
+        client, valid_jwt, valid_json,
+        jwks_host_response, success_enrich_expected_body
+):
+    fetch_data_mock.return_value = jwks_host_response
     mocked_post.side_effect = build_side_effect('POST')
     mocked_get.side_effect = build_side_effect('GET')
-    response = client.post(route, headers=headers(valid_jwt), json=valid_json)
+    response = client.post(
+        route, headers=headers(valid_jwt()), json=valid_json
+    )
     assert response.status_code == HTTPStatus.OK
-    assert response.get_json() == EXPECTED_PAYLOAD_SUCCESS
-
-
-def test_enrich_call_with_invalid_jwt_failure(route, client, invalid_jwt):
-    response = client.post(route, headers=headers(invalid_jwt))
-    assert response.get_json() == EXPECTED_PAYLOAD_PERMISSION_DENIED
+    assert response.get_json() == success_enrich_expected_body
 
 
 @patch('requests.post')
-def test_enrich_call_500(mocked_post, route, client, valid_jwt, valid_json):
-    mocked_post.return_value = Mock(
-        ok=False,
-        status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
-        json=lambda: QRADAR_500_ERROR_RESPONSE
-    )
-    response = client.post(route, headers=headers(valid_jwt), json=valid_json)
-    assert response.status_code == HTTPStatus.OK
-    assert response.get_json() == EXPECTED_PAYLOAD_500_ERROR
+@patch('jwt.PyJWKClient.fetch_data')
+def test_enrich_call_500(
+        fetch_data_mock, mocked_post, route, client, valid_jwt,
+        valid_json, jwks_host_response
+):
+    if route == 'observe/observables':
+        fetch_data_mock.return_value = jwks_host_response
+        mocked_post.return_value = Mock(
+            ok=False,
+            status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
+            json=lambda: QRADAR_500_ERROR_RESPONSE
+        )
+        response = client.post(
+            route, headers=headers(valid_jwt()), json=valid_json
+        )
+        assert response.status_code == HTTPStatus.OK
+        assert response.get_json() == EXPECTED_PAYLOAD_500_ERROR

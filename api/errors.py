@@ -3,6 +3,7 @@ PERMISSION_DENIED = 'permission denied'
 UNKNOWN = 'unknown'
 INTERNAL = 'internal error'
 GATEWAY_TIMEOUT = 'gateway timeout'
+AUTH_ERROR = 'authorization error'
 
 
 class CTRBaseError(Exception):
@@ -43,6 +44,14 @@ class QRadarInvalidCredentialsError(CTRBaseError):
         )
 
 
+class AuthorizationError(CTRBaseError):
+    def __init__(self, message='Authorization failed on QRadar side'):
+        super().__init__(
+            AUTH_ERROR,
+            f'Authorization failed: {message}'
+        )
+
+
 class QRadarUnexpectedError(CTRBaseError):
     def __init__(self, response):
         if response.json():
@@ -58,4 +67,12 @@ class BadRequestError(CTRBaseError):
         super().__init__(
             INVALID_ARGUMENT,
             f'Invalid JSON payload received. {message}'
+        )
+
+
+class WatchdogError(CTRBaseError):
+    def __init__(self):
+        super().__init__(
+            code='health check failed',
+            message='Invalid Health Check'
         )

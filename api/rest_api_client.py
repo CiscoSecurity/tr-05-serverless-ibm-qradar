@@ -4,7 +4,7 @@ from http import HTTPStatus
 from api.errors import (
     QRadarInternalServerError,
     QRadarUnexpectedError,
-    QRadarInvalidCredentialsError,
+    AuthorizationError,
 )
 from .utils import handle_connection_error
 
@@ -26,7 +26,7 @@ class RestApiClient:
 
         else:
             expected_response_errors = {
-                HTTPStatus.UNAUTHORIZED: QRadarInvalidCredentialsError,
+                HTTPStatus.UNAUTHORIZED: AuthorizationError,
                 HTTPStatus.INTERNAL_SERVER_ERROR: QRadarInternalServerError,
             }
 
