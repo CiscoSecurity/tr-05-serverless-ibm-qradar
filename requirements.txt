@@ -1,6 +1,8 @@
-Authlib==0.14.1
+cryptography==3.4.6
+pyjwt==2.0.1
 Flask==1.1.2
 marshmallow==3.5.1
 requests==2.23.0
 urllib3==1.25.8
+zappa==0.52.0
 

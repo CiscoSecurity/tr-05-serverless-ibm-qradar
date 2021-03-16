@@ -1,8 +1,11 @@
 from flask import Flask, jsonify
+
 from api.enrich import enrich_api
+from api.errors import CTRBaseError
 from api.health import health_api
 from api.respond import respond_api
-from api.errors import CTRBaseError
+from api.version import version_api
+from api.watchdog import watchdog_api
 from api.utils import jsonify_errors
 
 
@@ -14,10 +17,13 @@ app.config.from_object('config.Config')
 app.register_blueprint(health_api)
 app.register_blueprint(enrich_api)
 app.register_blueprint(respond_api)
+app.register_blueprint(version_api)
+app.register_blueprint(watchdog_api)
 
 
 @app.errorhandler(Exception)
 def handle_error(exception):
+    app.logger.error(exception)
     code = getattr(exception, 'code', 500)
     message = getattr(exception, 'description', 'Something went wrong.')
     reason = '.'.join([
@@ -31,6 +37,7 @@ def handle_error(exception):
 
 @app.errorhandler(CTRBaseError)
 def handle_tr_formatted_error(error):
+    app.logger.error(error.json)
     return jsonify_errors(error.json)
 
 

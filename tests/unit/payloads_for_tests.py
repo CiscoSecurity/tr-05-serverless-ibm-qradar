@@ -60,13 +60,12 @@ QRADAR_OBSERVE_RESPONSES_FOR_GET = [
     }
 ]
 
-EXPECTED_PAYLOAD_SUCCESS = {
-  "data": [
-    {
-      "utf8_payload": "May  8 07:47:00 127.0.0.1 [Thread-64]"
-    },
-    {
-      "utf8_payload": "May  8 07:47:00 127.0.0.1 [Thread-64]"
-    }
-  ]
+EXPECTED_WATCHDOG_ERROR = {
+    'errors': [
+        {
+            'code': 'health check failed',
+            'message': 'Invalid Health Check',
+            'type': 'fatal'
+        }
+    ]
 }

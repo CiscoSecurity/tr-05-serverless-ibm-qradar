@@ -1,4 +1,3 @@
-import os
 from datetime import timedelta
 
 from version import VERSION
@@ -6,9 +5,6 @@ from version import VERSION
 
 class Config:
     VERSION = VERSION
-
-    SECRET_KEY = os.environ.get('SECRET_KEY', '')
-    SERVER_IP = os.environ.get('SERVER_IP', '192.168.240.149')
 
     ARIAL_VERSION = '12.0'
 
@@ -20,3 +16,11 @@ class Config:
         'Version': '12.0',
     }
     BASE_URI = '/api/'
+
+    REFER_URL = (
+        "https://{server_ip}/console/do/ariel/arielSearch?appName="
+        "EventViewer&pageId=EventList&dispatch=performSearch"
+        "&value(timeRangeType)=aqlTime&value(searchMode)=AQL&value(aql)="
+        "SELECT * FROM events WHERE sourceip='{observable}' OR "
+        "destinationip='{observable}' LAST 7 DAYS"
+    )
