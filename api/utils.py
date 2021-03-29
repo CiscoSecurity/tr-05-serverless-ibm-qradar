@@ -2,7 +2,7 @@ from datetime import datetime
 from urllib.error import URLError
 
 import jwt
-from flask import request, current_app, jsonify
+from flask import request, current_app, jsonify, g
 from jwt import (
     PyJWKClient, InvalidSignatureError, InvalidAudienceError,
     DecodeError, PyJWKClientError
@@ -30,16 +30,19 @@ WRONG_JWKS_HOST = ('Wrong jwks_host in JWT payload. Make sure domain follows '
                    'the visibility.<region>.cisco.com structure')
 
 
+def set_ctr_entities_limit(payload):
+    try:
+        ctr_entities_limit = int(payload['CTR_ENTITIES_LIMIT'])
+        assert ctr_entities_limit > 0
+    except (KeyError, ValueError, AssertionError):
+        ctr_entities_limit = current_app.config['CTR_DEFAULT_ENTITIES_LIMIT']
+    current_app.config['CTR_ENTITIES_LIMIT'] = ctr_entities_limit
+
+
 def get_time_intervals():
     end_time = datetime.now()
     start_time = end_time - current_app.config['TOTAL_TIME_INTERVAL']
-    delta = current_app.config['TIME_DELTA']
-    times = []
-    while start_time < end_time:
-        times.append(start_time)
-        start_time += delta
-    times.append(end_time)
-    return times
+    return start_time, end_time
 
 
 def handle_connection_error(func):
@@ -80,6 +83,7 @@ def get_credentials():
         )
         current_app.config['SERVER_IP'] = payload['SERVER_IP']
 
+        set_ctr_entities_limit(payload)
         return payload['user'], payload['pass']
     except tuple(expected_errors) as error:
         raise AuthorizationError(expected_errors[error.__class__])
@@ -117,5 +121,19 @@ def jsonify_data(data):
     return jsonify({'data': data})
 
 
-def jsonify_errors(error):
-    return jsonify({'errors': [error]})
+def format_docs(docs):
+    return {'count': len(docs), 'docs': docs}
+
+
+def jsonify_result():
+    result = {'data': {}}
+
+    if g.get('sightings'):
+        result['data']['sightings'] = format_docs(g.sightings)
+
+    if g.get('errors'):
+        result['errors'] = g.errors
+        if not result['data']:
+            del result['data']
+
+    return jsonify(result)

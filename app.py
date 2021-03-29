@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, g
 
 from api.enrich import enrich_api
 from api.errors import CTRBaseError
@@ -6,7 +6,7 @@ from api.health import health_api
 from api.respond import respond_api
 from api.version import version_api
 from api.watchdog import watchdog_api
-from api.utils import jsonify_errors
+from api.utils import jsonify_result
 
 
 app = Flask(__name__)
@@ -38,7 +38,8 @@ def handle_error(exception):
 @app.errorhandler(CTRBaseError)
 def handle_tr_formatted_error(error):
     app.logger.error(error.json)
-    return jsonify_errors(error.json)
+    g.errors = [error.json]
+    return jsonify_result()
 
 
 if __name__ == '__main__':

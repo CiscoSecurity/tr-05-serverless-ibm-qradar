@@ -105,6 +105,19 @@ def authorization_errors_expected_payload(route):
     return _make_payload_message
 
 
+@fixture(scope='module')
+def internal_errors_expected_payload():
+    return {
+        "errors": [
+            {
+                "code": "internal error",
+                "message": "The QRadar internal error.",
+                "type": "fatal"
+            }
+        ]
+    }
+
+
 def qradar_api_response_mock(status_code, payload=None):
     mock_response = MagicMock()
 
@@ -123,6 +136,16 @@ def qradar_response_unauthorized_creds():
         status_code=HTTPStatus.UNAUTHORIZED,
         payload={
             'message': 'You are unauthorized to access the requested resource.'
+        }
+    )
+
+
+@fixture(scope='module')
+def qradar_response_internal_error():
+    return qradar_api_response_mock(
+        status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
+        payload={
+            'message': 'Internal Error'
         }
     )
 
@@ -168,12 +191,110 @@ def success_refer_body():
 @fixture(scope='module')
 def success_observe_body():
     return {
-        "data": [
-            {
-                "utf8_payload": "May  8 07:47:00 127.0.0.1 [Thread-64]"
-            },
-            {
-                "utf8_payload": "May  8 07:47:00 127.0.0.1 [Thread-64]"
+        'data': {
+            'sightings': {
+                'count': 2,
+                'docs': [
+                    {
+                        'confidence': 'High',
+                        'count': 1,
+                        'description': 'A QRadar SIEM record related '
+                                       'to "127.0.0.1"',
+                        'observed_time': {
+                            'end_time': '2021-03-21T19:22:00.581000Z',
+                            'start_time': '2021-03-21T19:22:00.581000Z'
+                        },
+                        'observables': [
+                            {
+                                'type': 'ip',
+                                'value': '127.0.0.1'
+                            }
+                        ],
+                        'relations': [
+                            {
+                                'origin': 'QRadar SIEM',
+                                'related': {'type': 'ip',
+                                            'value': '127.0.0.1'},
+                                'relation': 'Connected_To',
+                                'source': {'type': 'ip',
+                                           'value': '10.6.1.110'}
+                            }
+                        ],
+                        'schema_version': '1.1.4',
+                        'source': 'QRadar SIEM',
+                        'targets':
+                            [
+                                {
+                                    'observables': [
+                                        {
+                                            'type': 'ip',
+                                            'value': '10.6.1.110'
+                                        }
+                                    ],
+                                    'observed_time': {
+                                        'end_time':
+                                            '2021-03-21T19:22:00.581000Z',
+                                        'start_time':
+                                            '2021-03-21T19:22:00.581000Z'
+                                    },
+                                    'type': 'endpoint'
+                                }
+                            ],
+                        'type': 'sighting'
+                    },
+                    {
+                        'confidence': 'High',
+                        'count': 1,
+                        'description': 'A QRadar SIEM record related '
+                                       'to "127.0.0.1"',
+                        'observed_time': {
+                            'end_time': '2021-03-21T19:22:00.581000Z',
+                            'start_time': '2021-03-21T19:22:00.581000Z'
+                        },
+                        'observables': [
+                            {
+                                'type': 'ip',
+                                'value': '127.0.0.1'
+                            }
+                        ],
+                        'relations': [
+                            {'origin': 'QRadar SIEM',
+                             'related': {'type': 'ip',
+                                         'value': '127.0.0.1'},
+                             'relation': 'Connected_To',
+                             'source': {'type': 'ip',
+                                        'value': '10.6.1.110'}
+                             }
+                        ],
+                        'schema_version': '1.1.4',
+                        'source': 'QRadar SIEM',
+                        'targets': [
+                            {
+                                'observables': [
+                                    {'type': 'ip',
+                                     'value': '10.6.1.110'
+                                     }
+                                ],
+                                'observed_time': {
+                                    'end_time':
+                                        '2021-03-21T19:22:00.581000Z',
+                                    'start_time':
+                                        '2021-03-21T19:22:00.581000Z'
+                                },
+                                'type': 'endpoint'
+                            }
+                        ],
+                        'type': 'sighting'
+                    }
+                ]
             }
-        ]
+        }
     }
+
+
+@fixture(scope='module')
+def invalid_json_expected_body(route):
+    if route == '/observe/observables':
+        return {'data': {}}
+
+    return {'data': []}

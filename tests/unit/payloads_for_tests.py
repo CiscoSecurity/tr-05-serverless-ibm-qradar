@@ -35,30 +35,51 @@ QRADAR_500_ERROR_RESPONSE = {
 }
 
 QRADAR_OBSERVE_RESPONSES_FOR_POST = [
-    {"search_id": "8aa7575f-da92-4d47-9d2e-0e833a66b202"},
-    {"search_id": "107d5dc6-fbb8-23a5-8faa-df8e37114476"},
-    {"search_id": "1ui7i758-pk83-y78k-43a5-0y873a65b211"}
+    {"search_id": "123", "status": "COMPLETED"},
+    {"search_id": "456", "status": "COMPLETED"}
 ]
-
 
 QRADAR_OBSERVE_RESPONSES_FOR_GET = [
     {
         "columns": [
-             {"name": "URL"},
-             {"name": "sourceip"}
-         ]
-    },
-    {
-        "events": [
-            {"utf8_payload": "May  8 07:42:00 127.0.0.1 notification_log"}
+            {"name": "destinationip"},
+            {"name": "sourceip"}
         ]
     },
     {
         "events": [
-            {"utf8_payload": "May  8 07:47:00 127.0.0.1 [Thread-64]"}
+            {
+                "starttime": 1616354520581,
+                "protocolid": 255,
+                "sourceip": "10.6.1.110",
+                "logsourceid": 65,
+                "qid": 38750003,
+                "sourceport": 0,
+                "eventcount": 1,
+                "magnitude": 5,
+                "identityip": "0.0.0.0",
+                "destinationip": "127.0.0.1",
+                "destinationport": 0,
+                "category": 8052
+            },
+            {
+                "starttime": 1616354520581,
+                "protocolid": 255,
+                "sourceip": "10.6.1.110",
+                "logsourceid": 65,
+                "qid": 38750003,
+                "sourceport": 0,
+                "eventcount": 1,
+                "magnitude": 5,
+                "identityip": "0.0.0.0",
+                "destinationip": "127.0.0.1",
+                "destinationport": 0,
+                "category": 8052
+            }
         ]
     }
 ]
+
 
 EXPECTED_WATCHDOG_ERROR = {
     'errors': [
