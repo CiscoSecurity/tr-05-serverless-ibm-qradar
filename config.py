@@ -8,8 +8,7 @@ class Config:
 
     ARIAL_VERSION = '12.0'
 
-    TOTAL_TIME_INTERVAL = timedelta(minutes=10)
-    TIME_DELTA = timedelta(minutes=5)
+    TOTAL_TIME_INTERVAL = timedelta(days=7)
 
     HEADERS = {
         'Accept': 'application/json',
@@ -24,3 +23,30 @@ class Config:
         "SELECT * FROM events WHERE sourceip='{observable}' OR "
         "destinationip='{observable}' LAST 7 DAYS"
     )
+
+    CTIM_DEFAULTS = {
+        'schema_version': '1.1.4',
+    }
+
+    SOURCE = 'QRadar SIEM'
+
+    SIGHTING_DEFAULTS = {
+        **CTIM_DEFAULTS,
+        'confidence': 'High',
+        'count': 1,
+        'type': 'sighting',
+        'source': SOURCE,
+    }
+
+    RELATIONS_DEFAULTS = {
+        "origin": 'QRadar SIEM',
+        "relation": 'Connected_To'
+    }
+
+    QRADAR_OBSERVABLE_TYPES = [
+        'ip'
+    ]
+
+    CTR_DEFAULT_ENTITIES_LIMIT = 100
+
+    SEARCH_TIMOUT_IN_SEC = 40

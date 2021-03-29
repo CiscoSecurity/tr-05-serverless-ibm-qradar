@@ -76,3 +76,12 @@ class WatchdogError(CTRBaseError):
             code='health check failed',
             message='Invalid Health Check'
         )
+
+
+class QRadarTimeoutError(CTRBaseError):
+    def __init__(self):
+        super().__init__(
+            GATEWAY_TIMEOUT,
+            'Failed to get search results since search processing '
+            'is still ongoing on QRadar API side.'
+        )

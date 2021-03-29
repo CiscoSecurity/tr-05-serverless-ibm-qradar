@@ -1,17 +1,33 @@
 from functools import partial
-from .ariel_search_client import ArialSearchClient
-from .arial_query import ArialQuery
+from time import time
+from .ariel_search_client import ArielSearchClient
+from .ariel_query import ArielQuery
+from .mapping import Mapping
 
-from flask import Blueprint, current_app
+
+from flask import Blueprint, current_app, g
 
 from api.schemas import ObservableSchema
 from api.utils import (get_json, get_credentials,
-                       jsonify_data, get_time_intervals)
+                       jsonify_data, jsonify_result, get_time_intervals)
+from api.errors import QRadarTimeoutError
 
 
 enrich_api = Blueprint('enrich', __name__)
 
 get_observables = partial(get_json, schema=ObservableSchema(many=True))
+
+
+def filter_observables(relay_input):
+    observables = []
+    for observable in relay_input:
+        type_ = observable['type'].lower()
+        value = observable['value']
+        if (type_ in current_app.config['QRADAR_OBSERVABLE_TYPES']
+                and value not in observables):
+            observables.append(value)
+
+    return observables
 
 
 @enrich_api.route('/deliberate/observables', methods=['POST'])
@@ -22,37 +38,54 @@ def deliberate_observables():
 
 @enrich_api.route('/observe/observables', methods=['POST'])
 def observe_observables():
-    api_client = ArialSearchClient(get_credentials(), current_app.config)
-    arial_query = ArialQuery()
-    observables = get_observables()
+    def query_qradar(obs):
+        query_with_observables = arial_query.build(
+            observable=obs,
+            names=names,
+            time=get_time_intervals(),
+            limit=current_app.config['CTR_ENTITIES_LIMIT']
+        )
+        if not query_with_observables:
+            return jsonify_data({})
+
+        search_id, status = api_client.create_search(query_with_observables)
+
+        start_time = time()
+        while status != 'COMPLETED':
+            if (time() - start_time
+                    < current_app.config['SEARCH_TIMOUT_IN_SEC']):
+                status = api_client.get_search(search_id)['status']
+            else:
+                raise QRadarTimeoutError
+
+        return api_client.get_search_results(search_id)['events']
+
+    relay_input = get_observables()
+    observables = filter_observables(relay_input)
+
+    if not observables:
+        return jsonify_data({})
+
+    api_client = ArielSearchClient(get_credentials(), current_app.config)
+    arial_query = ArielQuery()
+
     query_with_limit = arial_query.build(limit=1)
-    search_id = api_client.create_search(query_with_limit)
+    search_id_metadata, _ = api_client.create_search(query_with_limit)
 
     params = {
         'fields': 'columns (name)',
-        'filter': 'object_value_type in ("String","Host")'
+        'filter': 'object_value_type = "Host"'
     }
-    names = api_client.get_metadata(search_id, params)
+    names = api_client.get_metadata(search_id_metadata, params)
 
-    relay_response = []
+    g.sightings = []
+    for observable in observables:
+        response = query_qradar(observable)
+        for event in response:
+            mapping = Mapping()
+            g.sightings.append(mapping.sighting(observable, event))
 
-    times = get_time_intervals()
-    searches = []
-    for i in range(len(times) - 1):
-        query_with_observables = arial_query.build(
-            observables=observables,
-            names=names,
-            time=(times[i], times[i + 1])
-        )
-        if not query_with_observables:
-            continue
-        search_id = api_client.create_search(query_with_observables)
-        searches.append(search_id)
-
-    for search_id in searches:
-        relay_response += \
-            api_client.get_search_results(search_id)['events']
-    return jsonify_data(relay_response)
+    return jsonify_result()
 
 
 def get_search_pivots(value):
@@ -70,15 +103,17 @@ def get_search_pivots(value):
 
 @enrich_api.route('/refer/observables', methods=['POST'])
 def refer_observables():
-    _ = get_credentials()
-    observables = get_observables()
+    relay_input = get_observables()
+    observables = filter_observables(relay_input)
+
     if not observables:
         return jsonify_data([])
+
+    _ = get_credentials()
 
     relay_output = []
 
     for observable in observables:
-        if observable['type'] == 'ip':
-            relay_output.append(get_search_pivots(observable['value']))
+        relay_output.append(get_search_pivots(observable))
 
     return jsonify_data(relay_output)
