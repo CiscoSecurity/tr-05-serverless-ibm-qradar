@@ -9,25 +9,14 @@ from flask import Blueprint, current_app, g
 
 from api.schemas import ObservableSchema
 from api.utils import (get_json, get_credentials,
-                       jsonify_data, jsonify_result, get_time_intervals)
+                       jsonify_data, jsonify_result,
+                       get_time_intervals, filter_observables)
 from api.errors import QRadarTimeoutError
 
 
 enrich_api = Blueprint('enrich', __name__)
 
 get_observables = partial(get_json, schema=ObservableSchema(many=True))
-
-
-def filter_observables(relay_input):
-    observables = []
-    for observable in relay_input:
-        type_ = observable['type'].lower()
-        value = observable['value']
-        if (type_ in current_app.config['QRADAR_OBSERVABLE_TYPES']
-                and value not in observables):
-            observables.append(value)
-
-    return observables
 
 
 @enrich_api.route('/deliberate/observables', methods=['POST'])

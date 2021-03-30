@@ -13,7 +13,10 @@ class Config:
     HEADERS = {
         'Accept': 'application/json',
         'Version': '12.0',
+        'User-Agent': ('SecureX Threat Response Integrations '
+                       '<tr-integrations-support@cisco.com>')
     }
+
     BASE_URI = '/api/'
 
     REFER_URL = (
@@ -50,3 +53,11 @@ class Config:
     CTR_DEFAULT_ENTITIES_LIMIT = 100
 
     SEARCH_TIMOUT_IN_SEC = 40
+
+    REFERENCE_SET_DEFAULTS = {
+        'source': 'Secure X Threat Response'
+    }
+
+    REFERENCE_SET_ELEM_TYPE = {'element_type': 'IP'}
+
+    SECUREX_SET_NAME = 'SecureX Investigation'

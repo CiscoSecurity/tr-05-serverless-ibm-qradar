@@ -19,6 +19,8 @@ def routes():
     yield '/health'
     yield '/refer/observables'
     yield '/observe/observables'
+    yield '/respond/observables'
+    yield '/respond/trigger'
 
 
 @fixture(scope='module', params=routes(), ids=lambda route: f'POST {route}')
@@ -27,7 +29,12 @@ def route(request):
 
 
 @fixture(scope='module')
-def valid_json():
+def valid_json(route):
+    if route.endswith('/trigger'):
+        return {'observable_type': 'ip',
+                'observable_value': '1.1.1.1',
+                'reference_set_name': 'Database Servers',
+                'action-id': 'qradar-add-to-reference-set'}
     return [{'type': 'ip', 'value': '1.1.1.1'}]
 
 

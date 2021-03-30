@@ -4,7 +4,7 @@ import jwt
 from pytest import fixture
 from unittest.mock import MagicMock, patch
 
-from api.errors import AUTH_ERROR
+from api.errors import AUTH_ERROR, INVALID_ARGUMENT
 from app import app
 
 
@@ -100,6 +100,9 @@ def authorization_errors_expected_payload(route):
                 ]
 
         }
+
+        if route.endswith('/trigger'):
+            payload.update({'data': {'status': 'failure'}})
         return payload
 
     return _make_payload_message
@@ -298,3 +301,116 @@ def invalid_json_expected_body(route):
         return {'data': {}}
 
     return {'data': []}
+
+
+@fixture(scope='module')
+def post_reference_set_response():
+    return qradar_api_response_mock(HTTPStatus.OK)
+
+
+@fixture(scope='module')
+def invalid_json_expected_payload(route):
+    payload = {
+        'errors': [
+            {
+                'code': INVALID_ARGUMENT,
+                'message': 'Invalid JSON payload received. ',
+                'type': 'fatal'}
+        ],
+    }
+    if route.endswith('/observables'):
+        payload['errors'][0]['message'] += \
+            "{0: {'value': ['Missing data for required field.']}}"
+    if route.endswith('/trigger'):
+        payload['errors'][0]['message'] += \
+            "{'action-id': ['Missing data for required field.']}"
+        payload.update({'data': {'status': 'failure'}})
+
+    return payload
+
+
+@fixture(scope='module')
+def qradar_response_reference_sets():
+    return qradar_api_response_mock(
+        HTTPStatus.OK, [
+            {
+                "timeout_type": "FIRST_SEEN",
+                "number_of_elements": 0,
+                "creation_time": 1440703855335,
+                "name": "Set 1",
+                "namespace": "SHARED",
+                "element_type": "IP",
+                "collection_id": 19
+            },
+            {
+                "timeout_type": "LAST_SEEN",
+                "number_of_elements": 1,
+                "creation_time": 1389036075909,
+                "name": "Set 2",
+                "namespace": "SHARED",
+                "element_type": "IP",
+                "collection_id": 9
+            }
+        ]
+    )
+
+
+@fixture(scope='module')
+def qradar_response_set_data():
+    return qradar_api_response_mock(
+        HTTPStatus.OK,
+        {
+            "data": [
+                {
+                    "value": "1.1.1.1"
+                }
+            ]
+        }
+    )
+
+
+@fixture(scope='module')
+def respond_observables_expected_payload():
+    return {
+        "data": [
+            {
+                "categories": [
+                    "QRadar SIEM"
+                ],
+                "description": "Add IP to Reference Set",
+                "id": "qradar-add-to-reference-set",
+                "query-params": {
+                    "observable_type": "ip",
+                    "observable_value": "1.1.1.1",
+                    "reference_set_name": "Set 1"
+                },
+                "title": "Add to Set 1 Reference Set"
+            },
+            {
+                "categories": [
+                    "QRadar SIEM"
+                ],
+                "description": "Add IP to SecureX Investigation Reference Set",
+                "id": "qradar-add-and-create-reference-set",
+                "query-params": {
+                    "observable_type": "ip",
+                    "observable_value": "1.1.1.1",
+                    "reference_set_name": "SecureX Investigation"
+                },
+                "title": "Create a Reference Set and add an observable to it"
+            },
+            {
+                "categories": [
+                    "QRadar SIEM"
+                ],
+                "description": "Remove IP from Reference Set",
+                "id": "qradar-remove-from-reference-set",
+                "query-params": {
+                    "observable_type": "ip",
+                    "observable_value": "1.1.1.1",
+                    "reference_set_name": "Set 2"
+                },
+                "title": "Remove from Set 2 Reference Set"
+            }
+        ]
+    }
