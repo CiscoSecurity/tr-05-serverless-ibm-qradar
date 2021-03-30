@@ -128,6 +128,9 @@ def format_docs(docs):
 def jsonify_result():
     result = {'data': {}}
 
+    if g.get('status'):
+        result['data']['status'] = g.status
+
     if g.get('sightings'):
         result['data']['sightings'] = format_docs(g.sightings)
 
@@ -137,3 +140,23 @@ def jsonify_result():
             del result['data']
 
     return jsonify(result)
+
+
+def join_url(parts):
+    return '/'.join(parts)
+
+
+def add_status(status):
+    g.status = status
+
+
+def filter_observables(relay_input):
+    observables = []
+    for observable in relay_input:
+        type_ = observable['type'].lower()
+        value = observable['value']
+        if (type_ in current_app.config['QRADAR_OBSERVABLE_TYPES']
+                and value not in observables):
+            observables.append(value)
+
+    return observables

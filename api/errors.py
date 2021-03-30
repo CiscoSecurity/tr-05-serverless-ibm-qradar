@@ -85,3 +85,11 @@ class QRadarTimeoutError(CTRBaseError):
             'Failed to get search results since search processing '
             'is still ongoing on QRadar API side.'
         )
+
+
+class InvalidArgumentError(CTRBaseError):
+    def __init__(self, error):
+        super().__init__(
+            INVALID_ARGUMENT,
+            str(error)
+        )

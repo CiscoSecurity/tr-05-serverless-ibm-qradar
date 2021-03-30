@@ -23,7 +23,6 @@ class RestApiClient:
     def _get_response_data(response):
         if response.ok:
             return response.json()
-
         else:
             expected_response_errors = {
                 HTTPStatus.UNAUTHORIZED: AuthorizationError,
@@ -48,4 +47,11 @@ class RestApiClient:
         response = requests.post(
             f'https://{self.server_ip}{self.base_uri}{endpoint}',
             data, headers=self.headers, verify=False, auth=self.credentials)
+        return self._get_response_data(response)
+
+    @handle_connection_error
+    def _delete(self, endpoint, headers):
+        response = requests.delete(
+            f'https://{self.server_ip}{self.base_uri}{endpoint}',
+            headers=headers, verify=False, auth=self.credentials)
         return self._get_response_data(response)
