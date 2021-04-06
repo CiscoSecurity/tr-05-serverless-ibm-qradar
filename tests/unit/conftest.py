@@ -194,100 +194,127 @@ def success_refer_body():
 @fixture(scope='module')
 def success_observe_body():
     return {
-        'data': {
-            'sightings': {
-                'count': 2,
-                'docs': [
+        "data": {
+            "sightings": {
+                "count": 2,
+                "docs": [
                     {
-                        'confidence': 'High',
-                        'count': 1,
-                        'description': 'A QRadar SIEM record related '
-                                       'to "127.0.0.1"',
-                        'observed_time': {
-                            'end_time': '2021-03-21T19:22:00.581000Z',
-                            'start_time': '2021-03-21T19:22:00.581000Z'
+                        "confidence": "High",
+                        "count": 1,
+                        "description": "A QRadar SIEM record retrieved from "
+                                       "log source **System Notification-2 :: "
+                                       "vm123** related to **\"127.0.0.1\"**",
+                        "observables": [
+                            {
+                                "type": "ip",
+                                "value": "127.0.0.1"
+                            }
+                        ],
+                        "observed_time": {
+                            "end_time": "2021-03-21T19:22:00.581000Z",
+                            "start_time": "2021-03-21T19:22:00.581000Z"
                         },
-                        'observables': [
+                        "relations": [
                             {
-                                'type': 'ip',
-                                'value': '127.0.0.1'
-                            }
-                        ],
-                        'relations': [
-                            {
-                                'origin': 'QRadar SIEM',
-                                'related': {'type': 'ip',
-                                            'value': '127.0.0.1'},
-                                'relation': 'Connected_To',
-                                'source': {'type': 'ip',
-                                           'value': '10.6.1.110'}
-                            }
-                        ],
-                        'schema_version': '1.1.4',
-                        'source': 'QRadar SIEM',
-                        'targets':
-                            [
-                                {
-                                    'observables': [
-                                        {
-                                            'type': 'ip',
-                                            'value': '10.6.1.110'
-                                        }
-                                    ],
-                                    'observed_time': {
-                                        'end_time':
-                                            '2021-03-21T19:22:00.581000Z',
-                                        'start_time':
-                                            '2021-03-21T19:22:00.581000Z'
-                                    },
-                                    'type': 'endpoint'
+                                "origin": "QRadar SIEM",
+                                "related": {
+                                    "type": "ip",
+                                    "value": "127.0.0.1"
+                                },
+                                "relation": "Connected_To",
+                                "source": {
+                                    "type": "ip",
+                                    "value": "10.6.1.110"
                                 }
-                            ],
-                        'type': 'sighting'
+                            }
+                        ],
+                        "schema_version": "1.1.4",
+                        "short_description": "Event: General "
+                                             "information message.",
+                        "source": "QRadar SIEM",
+                        "targets": [
+                            {
+                                "observables": [
+                                    {
+                                        "type": "ip",
+                                        "value": "10.6.1.110"
+                                    },
+                                    {
+                                        "type": "ipv6",
+                                        "value": "0:0:0:0:0:0:0:0"
+                                    },
+                                    {
+                                        "type": "mac_address",
+                                        "value": "00:00:00:00:00:00"
+                                    }
+                                ],
+                                "observed_time": {
+                                    "end_time": "2021-03-21T19:22:00.581000Z",
+                                    "start_time": "2021-03-21T19:22:00.581000Z"
+                                },
+                                "type": "endpoint"
+                            }
+                        ],
+                        "type": "sighting"
                     },
                     {
-                        'confidence': 'High',
-                        'count': 1,
-                        'description': 'A QRadar SIEM record related '
-                                       'to "127.0.0.1"',
-                        'observed_time': {
-                            'end_time': '2021-03-21T19:22:00.581000Z',
-                            'start_time': '2021-03-21T19:22:00.581000Z'
+                        "confidence": "High",
+                        "count": 1,
+                        "description": "A QRadar SIEM record retrieved from "
+                                       "log source **System Notification :: "
+                                       "vm123** related to **\"127.0.0.1\"**",
+                        "observables": [
+                            {
+                                "type": "ip",
+                                "value": "127.0.0.1"
+                            }
+                        ],
+                        "observed_time": {
+                            "end_time": "2021-03-21T19:22:00.581000Z",
+                            "start_time": "2021-03-21T19:22:00.581000Z"
                         },
-                        'observables': [
+                        "relations": [
                             {
-                                'type': 'ip',
-                                'value': '127.0.0.1'
-                            }
-                        ],
-                        'relations': [
-                            {'origin': 'QRadar SIEM',
-                             'related': {'type': 'ip',
-                                         'value': '127.0.0.1'},
-                             'relation': 'Connected_To',
-                             'source': {'type': 'ip',
-                                        'value': '10.6.1.110'}
-                             }
-                        ],
-                        'schema_version': '1.1.4',
-                        'source': 'QRadar SIEM',
-                        'targets': [
-                            {
-                                'observables': [
-                                    {'type': 'ip',
-                                     'value': '10.6.1.110'
-                                     }
-                                ],
-                                'observed_time': {
-                                    'end_time':
-                                        '2021-03-21T19:22:00.581000Z',
-                                    'start_time':
-                                        '2021-03-21T19:22:00.581000Z'
+                                "origin": "QRadar SIEM",
+                                "related": {
+                                    "type": "ip",
+                                    "value": "127.0.0.1"
                                 },
-                                'type': 'endpoint'
+                                "relation": "Connected_To",
+                                "source": {
+                                    "type": "ip",
+                                    "value": "10.6.1.110"
+                                }
                             }
                         ],
-                        'type': 'sighting'
+                        "schema_version": "1.1.4",
+                        "short_description": "Event: General "
+                                             "information message.",
+                        "source": "QRadar SIEM",
+                        "targets": [
+                            {
+                                "observables": [
+                                    {
+                                        "type": "ip",
+                                        "value": "10.6.1.110"
+                                    },
+                                    {
+                                        "type": "ipv6",
+                                        "value": "0:0:0:0:0:0:0:0"
+                                    },
+                                    {
+                                        "type": "mac_address",
+                                        "value": "00:00:00:00:00:00"
+                                    }
+                                ],
+                                "observed_time": {
+                                    "end_time": "2021-03-21T19:22:00.581000Z",
+                                    "start_time": "2021-03-21T19:22:00.581000Z"
+                                },
+                                "type": "endpoint"
+                            }
+                        ],
+                        "type": "sighting"
                     }
                 ]
             }

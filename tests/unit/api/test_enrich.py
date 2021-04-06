@@ -87,11 +87,11 @@ def test_enrich_with_extended_error_handling(
 ):
     if route == '/observe/observables':
         fetch_data_mock.return_value = jwks_host_response
-        mocked_post.side_effect = [
-            *build_side_effect('POST'),
-            qradar_response_internal_error
+        mocked_post.side_effect = build_side_effect('POST')
+
+        mocked_get.side_effect = [
+            *build_side_effect('GET'), qradar_response_internal_error
         ]
-        mocked_get.side_effect = build_side_effect('GET')
         response = client.post(
             route, headers=headers(valid_jwt()), json=valid_json_multiple
         )

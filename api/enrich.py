@@ -58,14 +58,11 @@ def observe_observables():
     api_client = ArielSearchClient(get_credentials(), current_app.config)
     arial_query = ArielQuery()
 
-    query_with_limit = arial_query.build(limit=1)
-    search_id_metadata, _ = api_client.create_search(query_with_limit)
-
     params = {
         'fields': 'columns (name)',
         'filter': 'object_value_type = "Host"'
     }
-    names = api_client.get_metadata(search_id_metadata, params)
+    names = api_client.get_metadata(params)
 
     g.sightings = []
     for observable in observables:

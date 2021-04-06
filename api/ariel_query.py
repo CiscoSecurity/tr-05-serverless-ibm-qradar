@@ -1,6 +1,10 @@
+from flask import current_app
+
+
 class ArielQuery:
     def __init__(self):
-        self.base_query = "SELECT * FROM events"
+        self.fields = current_app.config['LOG_ENTRY_FIELDS']
+        self.base_query = f'SELECT {self.fields} FROM events'
 
     def build(self, observable=None,
               names=None, time=None, limit=None):
