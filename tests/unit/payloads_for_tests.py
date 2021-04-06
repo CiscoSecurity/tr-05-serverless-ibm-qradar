@@ -52,29 +52,22 @@ QRADAR_OBSERVE_RESPONSES_FOR_GET = [
                 "starttime": 1616354520581,
                 "protocolid": 255,
                 "sourceip": "10.6.1.110",
-                "logsourceid": 65,
-                "qid": 38750003,
-                "sourceport": 0,
-                "eventcount": 1,
-                "magnitude": 5,
-                "identityip": "0.0.0.0",
                 "destinationip": "127.0.0.1",
-                "destinationport": 0,
-                "category": 8052
+                "sourcev6": "0:0:0:0:0:0:0:0",
+                "sourcemac": "00:00:00:00:00:00",
+                "username": None,
+                "logsource_name": "System Notification-2 :: vm123",
+                "event_descr": "General information message."
             },
             {
                 "starttime": 1616354520581,
-                "protocolid": 255,
                 "sourceip": "10.6.1.110",
-                "logsourceid": 65,
-                "qid": 38750003,
-                "sourceport": 0,
-                "eventcount": 1,
-                "magnitude": 5,
-                "identityip": "0.0.0.0",
                 "destinationip": "127.0.0.1",
-                "destinationport": 0,
-                "category": 8052
+                "sourcev6": "0:0:0:0:0:0:0:0",
+                "sourcemac": "00:00:00:00:00:00",
+                "username": None,
+                "logsource_name": "System Notification :: vm123",
+                "event_descr": "General information message."
             }
         ]
     }

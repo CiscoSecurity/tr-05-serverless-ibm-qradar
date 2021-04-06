@@ -5,7 +5,7 @@ class ArielSearchClient(RestApiClient):
 
     def __init__(self, creds, config):
 
-        self.base_url = 'ariel/searches'
+        self.base_url = 'ariel'
         super(ArielSearchClient, self).__init__(
             credentials=creds, config=config
         )
@@ -21,7 +21,8 @@ class ArielSearchClient(RestApiClient):
     def create_search(self, query_expression):
 
         data = {'query_expression': query_expression}
-        response = self._post(self.base_url, data=data)
+        url = self._get_url()
+        response = self._post(url, data=data)
 
         return response["search_id"], response["status"]
 
@@ -31,20 +32,20 @@ class ArielSearchClient(RestApiClient):
         if range_start and range_end:
             headers['Range'] = f'items={range_start}-{range_end}'
 
-        url = self._url_for(search_id, 'results')
+        url = self._get_url(search_id, 'results')
 
         return self._get(url, headers)
 
-    def get_metadata(self, search_id, params):
-        url = self._url_for(search_id, 'metadata')
+    def get_metadata(self, params):
+        url = self._get_url('events', query_endpoint='databases')
 
         response = self._get(url, self.headers, params)
-        return response.get("columns")
+        return response.get('columns')
 
     def get_search(self, search_id):
-        url = self._url_for(search_id)
+        url = self._get_url(search_id)
         return self._get(url, self.headers)
 
-    def _url_for(self, search_id, endpoint=None):
-        parts = [self.base_url, search_id, endpoint]
-        return '/'.join(filter(None, parts))
+    def _get_url(self, *parts, query_endpoint='searches'):
+        url = [self.base_url, query_endpoint, *parts]
+        return '/'.join(url)

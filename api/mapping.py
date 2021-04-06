@@ -22,7 +22,8 @@ class Mapping:
 
     @staticmethod
     def get_relations(event):
-        if event.get("sourceip") and event.get("destinationip"):
+        if ((event.get("sourceip") and event.get("destinationip")) and
+                (event["sourceip"] != event["destinationip"])):
             return [
                 {
                     "related": {
@@ -51,6 +52,9 @@ class Mapping:
         if event.get('sourcemac'):
             observables.append({'type': 'mac_address',
                                 'value': event['sourcemac']})
+        if event.get('username'):
+            observables.append({'type': 'user',
+                                'value': event['username']})
         if not observables:
             return []
 
@@ -74,7 +78,9 @@ class Mapping:
                 }
             ],
             'observed_time': self.observed_time(event),
-            'description': 'A QRadar SIEM record related to '
-                           f'"{observable}"',
+            'short_description': f"Event: {event['event_descr']}",
+            'description': 'A QRadar SIEM record retrieved from log source '
+                           f'**{event["logsource_name"]}** related to '
+                           f'**"{observable}"**',
             **current_app.config['SIGHTING_DEFAULTS']
         }
