@@ -16,7 +16,7 @@ class ArielSearchClient(RestApiClient):
         if range_start and range_end:
             headers['Range'] = f'items={range_start}-{range_end}'
 
-        return self._get(self.base_url, headers)
+        return self._get(self._get_url(), headers)
 
     def create_search(self, query_expression):
 

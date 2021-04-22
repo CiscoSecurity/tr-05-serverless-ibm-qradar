@@ -1,10 +1,10 @@
+import json
 from datetime import timedelta
-
-from version import VERSION
 
 
 class Config:
-    VERSION = VERSION
+    settings = json.load(open('container_settings.json', 'r'))
+    VERSION = settings['VERSION']
 
     ARIAL_VERSION = '15.0'
 
