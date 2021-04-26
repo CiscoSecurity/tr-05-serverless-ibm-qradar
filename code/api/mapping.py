@@ -78,7 +78,8 @@ class Mapping:
                 }
             ],
             'observed_time': self.observed_time(event),
-            'short_description': f"Event: {event['event_descr']}",
+            'short_description': f"Event '{event['event_name']}': "
+                                 + event['event_descr'],
             'description': 'A QRadar SIEM record retrieved from log source '
                            f'**{event["logsource_name"]}** related to '
                            f'**"{observable}"**',

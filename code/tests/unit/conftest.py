@@ -229,8 +229,8 @@ def success_observe_body():
                             }
                         ],
                         "schema_version": "1.1.4",
-                        "short_description": "Event: General "
-                                             "information message.",
+                        "short_description": "Event 'Information Message': "
+                                             "General information message.",
                         "source": "QRadar SIEM",
                         "targets": [
                             {
@@ -288,8 +288,8 @@ def success_observe_body():
                             }
                         ],
                         "schema_version": "1.1.4",
-                        "short_description": "Event: General "
-                                             "information message.",
+                        "short_description": "Event 'Information Message': "
+                                             "General information message.",
                         "source": "QRadar SIEM",
                         "targets": [
                             {

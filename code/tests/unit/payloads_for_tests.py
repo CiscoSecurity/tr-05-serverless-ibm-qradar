@@ -57,7 +57,8 @@ QRADAR_OBSERVE_RESPONSES_FOR_GET = [
                 "sourcemac": "00:00:00:00:00:00",
                 "username": None,
                 "logsource_name": "System Notification-2 :: vm123",
-                "event_descr": "General information message."
+                "event_descr": "General information message.",
+                "event_name": "Information Message"
             },
             {
                 "starttime": 1616354520581,
@@ -67,7 +68,8 @@ QRADAR_OBSERVE_RESPONSES_FOR_GET = [
                 "sourcemac": "00:00:00:00:00:00",
                 "username": None,
                 "logsource_name": "System Notification :: vm123",
-                "event_descr": "General information message."
+                "event_descr": "General information message.",
+                "event_name": "Information Message"
             }
         ]
     }
