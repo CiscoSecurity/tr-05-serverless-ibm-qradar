@@ -1,11 +1,11 @@
 from datetime import datetime
-from urllib.error import URLError
+from urllib.error import URLError, HTTPError
 
 import jwt
 from flask import request, current_app, jsonify, g
 from jwt import (
     PyJWKClient, InvalidSignatureError, InvalidAudienceError,
-    DecodeError, PyJWKClientError
+    DecodeError, PyJWKClientError, MissingRequiredClaimError
 )
 from requests.exceptions import ConnectionError
 
@@ -61,9 +61,11 @@ def get_credentials():
         AssertionError: JWKS_HOST_MISSING,
         InvalidSignatureError: WRONG_KEY,
         DecodeError: WRONG_JWT_STRUCTURE,
+        MissingRequiredClaimError: WRONG_PAYLOAD_STRUCTURE,
         InvalidAudienceError: WRONG_AUDIENCE,
         PyJWKClientError: KID_NOT_FOUND,
-        URLError: WRONG_JWKS_HOST
+        URLError: WRONG_JWKS_HOST,
+        HTTPError: WRONG_JWKS_HOST
     }
 
     try:

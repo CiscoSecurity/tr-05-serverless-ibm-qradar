@@ -65,5 +65,5 @@ class Config:
     LOG_ENTRY_FIELDS = (
         "starttime, endtime, sourceip, destinationip, sourcev6, "
         "sourcemac, username, LOGSOURCENAME(logsourceid) AS 'logsource_name', "
-        "QIDDESCRIPTION(qid) AS 'event_descr'"
+        "QIDDESCRIPTION(qid) AS 'event_descr', QIDNAME(qid) as 'event_name'"
     )
