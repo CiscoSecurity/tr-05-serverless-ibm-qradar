@@ -85,7 +85,7 @@ This application was developed and tested under Python version 3.9.
 - `POST /refer/observables`
   - Accepts a list of observables and filters out unsupported ones.
   - Builds a search link per each supported observable to pivot back to the
-  QRadar console and look up events with the observable there.
+  QRadar console and look up event logs with the observable there.
   - Returns a list of those links.
   
 - `POST /respond/observables`
@@ -112,6 +112,6 @@ This application was developed and tested under Python version 3.9.
 
 ### CTIM Mapping Specifics
 
-Each response from the QRadar API for the IP observables generates the following CTIM entities:
+Each event log in response from the QRadar API for the IP observables generates the following CTIM entities:
 
-- `Sightings` are based on the date and time the observable was seen in the logs and the log source that provided the event.
+- `Sightings` are based on the date and time the observable was seen in the logs and the log source that provided the event log.
