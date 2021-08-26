@@ -1,10 +1,10 @@
 [![Gitter Chat](https://img.shields.io/badge/gitter-join%20chat-brightgreen.svg)](https://gitter.im/CiscoSecurity/Threat-Response "Gitter Chat")
 
-# QRadar Relay (Cisco Hosted)
+# QRadar Relay
 
 A Cisco SecureX Concrete Relay implementation using QRadar as a third-party Cyber Threat Intelligence service provider.
 
-The Relay itself is just a simple application written in Python that can be easily packaged and deployed.  This relay is now Cisco Hosted and no longer requires AWS Lambda.
+The Relay itself is just a simple application written in Python that can be easily packaged and deployed.
 
 ## Rationale
 
@@ -18,9 +18,9 @@ Open the code folder in your terminal.
 cd code
 ```
 
-If you want to test the application you will require Docker and several dependencies from the [requirements.txt](code/requirements.txt) file:
+If you want to test the application you will require Docker and several dependencies from the [Pipfile](code/Pipfile) file:
 ```
-pip install --upgrade --requirement requirements.txt
+pip install --no-cache-dir --upgrade pipenv && pipenv install --dev
 ```
 
 You can perform two kinds of testing:
@@ -33,7 +33,7 @@ You can perform two kinds of testing:
   `coverage run --source api/ -m pytest --verbose tests/unit/ && coverage report`
   
 **NOTE.** If you need input data for testing purposes you can use data from the
-[observables.json](observables.json) file.
+[observables.json](code/observables.json) file.
 
 ### Building the Docker Container
 In order to build the application, we need to use a `Dockerfile`.  
@@ -62,6 +62,8 @@ docker logs tr-05-qradar
 
 ## Implementation Details
 
+This application was developed and tested under Python version 3.9.
+
 ### Implemented Relay Endpoints
 
 - `POST /health`
@@ -79,6 +81,27 @@ docker logs tr-05-qradar
   - Maps the fetched data into appropriate CTIM entities.
   - Returns a list per each of the following CTIM entities (if any extracted):
     - `Sighting`.
+  
+- `POST /refer/observables`
+  - Accepts a list of observables and filters out unsupported ones.
+  - Builds a search link per each supported observable to pivot back to the
+  QRadar console and look up event logs with the observable there.
+  - Returns a list of those links.
+  
+- `POST /respond/observables`
+  - Accepts a list of observables and filters out unsupported ones.
+  - Verifies the Authorization Bearer JWT and decodes it to restore the
+  original credentials.
+  - Makes a series of requests to the underlying external service to query for
+  actions available for given observables.
+  - Returns a list of those actions.
+
+- `POST /respond/trigger`
+  - Accepts an observable and an action.
+  - Verifies the Authorization Bearer JWT and decodes it to restore the
+  original credentials.
+  - Triggers an action at the underlying external service.
+  - Returns an action result.
 
 - `POST /version`
   - Returns the current version of the application.
@@ -87,3 +110,8 @@ docker logs tr-05-qradar
 
 - `ip`
 
+### CTIM Mapping Specifics
+
+Each event log in response from the QRadar API for the IP observables generates the following CTIM entities:
+
+- `Sightings` are based on the date and time the observable was seen in the logs and the log source that provided the event log.
