@@ -6,7 +6,7 @@ from api.errors import (
     QRadarUnexpectedError,
     AuthorizationError,
 )
-from .utils import handle_connection_error
+from .utils import handle_connection_error, handle_auth_errors
 
 
 class RestApiClient:
@@ -35,6 +35,7 @@ class RestApiClient:
                 raise QRadarUnexpectedError(response)
 
     @handle_connection_error
+    @handle_auth_errors
     def _get(self, endpoint, headers=None, params=None):
         response = requests.get(
             f'https://{self.server_ip}{self.base_uri}{endpoint}',
@@ -43,6 +44,7 @@ class RestApiClient:
         return self._get_response_data(response)
 
     @handle_connection_error
+    @handle_auth_errors
     def _post(self, endpoint, data=None):
         response = requests.post(
             f'https://{self.server_ip}{self.base_uri}{endpoint}',
@@ -50,6 +52,7 @@ class RestApiClient:
         return self._get_response_data(response)
 
     @handle_connection_error
+    @handle_auth_errors
     def _delete(self, endpoint, headers):
         response = requests.delete(
             f'https://{self.server_ip}{self.base_uri}{endpoint}',
