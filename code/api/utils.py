@@ -162,3 +162,13 @@ def filter_observables(relay_input):
             observables.append(value)
 
     return observables
+
+
+def handle_auth_errors(func):
+    def wrapper(self, *args, **kwargs):
+        try:
+            return func(self, *args, **kwargs)
+        except UnicodeEncodeError:
+            raise AuthorizationError()
+
+    return wrapper
