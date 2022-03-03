@@ -56,7 +56,6 @@
         }
     ],
     "properties": {
-        "url": "https://ciscohosted.url",
         "supported-apis": [
             "refer/observables",
             "observe/observables",
