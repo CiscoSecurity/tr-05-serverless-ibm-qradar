@@ -19,12 +19,6 @@ enrich_api = Blueprint('enrich', __name__)
 get_observables = partial(get_json, schema=ObservableSchema(many=True))
 
 
-@enrich_api.route('/deliberate/observables', methods=['POST'])
-def deliberate_observables():
-    # Not implemented
-    return jsonify_data({})
-
-
 @enrich_api.route('/observe/observables', methods=['POST'])
 def observe_observables():
     def query_qradar(obs):
